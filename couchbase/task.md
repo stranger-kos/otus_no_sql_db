@@ -48,4 +48,13 @@ C:\Users\kos>docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}
 ![](pictures/10.jpg) \
 ![](pictures/11.jpg) \
 ![](pictures/12.jpg) \
-![](pictures/13.jpg) \
+![](pictures/13.jpg) 
+
+## Наполнение тестовыми данными
+
+Выполняем команду Buckets-> Sample Buckets\
+Выбираем данные "travel-sample"\
+Нажимаем "Load Sample Data". \
+![](pictures/14.jpg) \
+Результаты загоузки данных \
+![](pictures/15.jpg)\
