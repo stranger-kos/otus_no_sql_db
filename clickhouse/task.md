@@ -214,3 +214,60 @@ Query id: 9417ea22-154e-4fcf-9527-a9e59a192090\
 Ok.
 
 0 rows in set. Elapsed: 0.095 sec.
+**Импорт скаченных данных** \
+clickhouse-client --password=123 --query "INSERT INTO tutorial.visits_v1 FORMAT TSV" --max_insert_block_size=100000 < visits_v1.tsv
+
+**Выборка количества скаченных данных** \
+SELECT count(*)\
+FROM tutorial.visits_v1\
+
+Query id: b8ba28c3-4e38-455c-bf33-f5b1420c7a41\
+
+┌─count() ┐\
+│ 1679791 │\
+└──────┘
+
+1 rows in set. Elapsed: 0.012 sec.
+
+**Запрос 1** \
+SELECT\
+    StartURL AS URL,\
+    AVG(Duration) AS AvgDuration\
+FROM tutorial.visits_v1\
+WHERE (StartDate >= '2014-03-23') AND (StartDate <= '2014-03-30')\
+GROUP BY URL\
+ORDER BY AvgDuration DESC\
+LIMIT 10\
+
+Query id: fb592157-47eb-4a42-bbec-5a059de93ddd
+
+┌─URL──────────────────────┬────────AvgDuration─┐\
+│ http://itpalanija-pri-patrivative=0&ads_app_user                                                                                                                                                │              60127 │\
+│ http://renaul-myd-ukraine                                                                                                                                                                       │              58938 │\
+│ http://karta/Futbol/dynamo.kiev.ua/kawaica.su/648                                                                                                                                               │              56538 │\
+│ http://e.mail=on&default?abid=2061&scd=yes&option?r=city_inter.com/menu&site-zaferio.ru/c/m.ensor.net/ru/login=false&orderStage.php?Brandidatamalystyle/20Mar2014%2F007%2F94dc8d2e06e56ed56bbdd │              51378 │
+│ http://karta/Futbol/dynas.com/haberler.ru/messages.yandsearchives/494503_lte_13800200319                                                                                                        │              49078 │\
+│ https://moda/vyikrorable.com/notification                                                                                                                                                       │            48828.6 │\
+│ https://moda/vyikroforum1/top.ru/moscow/delo-product/trend_sms/multitryaset/news/2014/03/201000                                                                                                 │ 41531.666666666664 │\
+│ http:%2F%2Fallback/angleNews                                                                                                                                                                    │  38878.29268292683 │\
+│ http://xmusic/vstreatings of speeds                                                                                                                                                             │              36925 │\
+│ http://bashmelnykh-metode.net/video/#!/video/emberkas.ru/detskij-yazi.com/iframe/default.aspx?id=760928&noreask=1&source                                                                        │              34323 │
+
+
+10 rows in set. Elapsed: 0.236 sec. Processed 1.45 million rows, 114.59 MB (6.16 million rows/s., 485.85 MB/s.)
+
+**Запрос 2** \
+SELECT\
+    sum(Sign) AS visits,\
+    sumIf(Sign, has(Goals.ID, 1105530)) AS goal_visits,\
+    (100. * goal_visits) / visits AS goal_percent\
+FROM tutorial.visits_v1\
+WHERE (CounterID = 912887) AND (toYYYYMM(StartDate) = 201403) AND (domain(StartURL) = 'yandex.ru')
+
+Query id: 47a4e40b-6241-48c9-a097-e7ed23e023de
+
+┌─visits─┬─goal_visits─┬──────goal_percent─┐\
+│  10543 │        8553 │ 81.12491700654462 │
+
+
+1 rows in set. Elapsed: 0.055 sec. Processed 40.05 thousand rows, 4.94 MB (730.87 thousand rows/s., 90.23 MB/s.)
