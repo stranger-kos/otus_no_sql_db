@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "7c6bbec4-10c2-435c-ac2b-97575e1a0059",
+		"name": "Elastic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01 - Создание индекса",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{local}}/otus-hometask",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"otus-hometask"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - Создание паттерна",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"index_patterns\": [\r\n        \"otus*\"\r\n    ],\r\n    \"template\": {\r\n        \"mappings\": {\r\n            \"_source\": {\r\n                \"enabled\": true\r\n            },\r\n            \"properties\": {\r\n                \"content\": {\r\n                    \"type\": \"text\"\r\n                }\r\n            }\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/_index_template/otus-template",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"_index_template",
+						"otus-template"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 - Добавление документов",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"create\": {\"_index\": \"otus-hometask\"}\r\n{ \"content\": \"моя мама мыла посуду а кот жевал сосиски\"}\r\n{ \"create\": {\"_index\": \"otus-hometask\"} }\r\n{ \"content\": \"рама была отмыта и вылизана котом\"}\r\n{ \"create\": {\"_index\": \"otus-hometask\"} }\r\n{ \"content\": \"мама мыла раму\"}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/_bulk",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"_bulk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 - Нечеткий поиск",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"query\": {\r\n        \"match\": {\r\n            \"content\": {\r\n                \"query\": \"мама ела сосиски\",\r\n                \"fuzziness\": \"auto\"\r\n            }\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/otus-hometask/_search",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"otus-hometask",
+						"_search"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "RHT0E*iVzL3ruLWVxqk9",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "elastic",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "https://127.0.0.1:9200",
+			"type": "default"
+		}
+	]
+}
