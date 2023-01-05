@@ -1,4 +1,4 @@
-# Создание бекап и восстановление данных
+# Создание бекапа и восстановление данных
 
 [Создаем отказоустойчивый кластер в соответствии с заданием 1](https://github.com/stranger-kos/otus_no_sql_db/blob/main/casandra/task_1/task.md)
 
@@ -90,13 +90,45 @@ Opening sstables and calculating sections to stream\
 Summary statistics:\
    Connections per host    : 1\
    Total files transferred : 0\
-   Total bytes transferred : 0.001KiB\
+   Total bytes transferred : 0.000KiB\
    Total duration          : 3714 ms\
-   Average transfer rate   : 0.001KiB/s\
-   Peak transfer rate      : 0.001KiB/s\
+   Average transfer rate   : 0.000KiB/s\
+   Peak transfer rate      : 0.000KiB/s\
 
    Делаем проверку что данные восстановлены
 >kubectl exec cassandra-0 -- cqlsh -e 'select * from classicmodels.offices' \
  officecode | addressline1      | addressline2 | city          | country | phone           | postalcode | state | territory
 ------------+-------------------+--------------+---------------+---------+-----------------+------------+-------+-----------\
           1 | 100 Market Street |    Suite 300 | San Francisco |     USA | +1 650 219 4782 |      94080 |    CA |        NA
+
+# Тестирование производительности драйверов для работы с БД
+
+В соответствии с (проектом)[https://github.com/davidcampos/cassandra-jpa-example] выполняем тестирование производительности при работе с БД.
+
+Для тестирования выбираем драйвера:
+* Datastax
+* Kundera
+
+Тестирование выполнялось на 1.000, 5.000, 10.000 операциях с 3-ми циклами повтора. Результаты тестирования.
+
+**CRUD-операции**
+
+|Operations |Driver     |Write    	| Update	|Read	|Delete   |
+|-----------|-----------|-----------|-----------|-------|---------|
+|1000	    |Datastax	|487	    |487	    |250    |220      |
+|1000       |Kundera	|446	    |383	    |201    |199      |
+|5000	    |Datastax	|1474	    |1357	    |1140	|1053     |
+|5000	    |Kundera	|1258	    |1331	    |1144	|199      |
+|10000	    |Datastax	|2439	    |2344	    |2318	|2106     |
+|10000	    |Kundera	|2174	    |2358	    |2222	|1902     |
+
+**Ресурсы**
+
+|Operations |Driver  |Cassandra RAM|Cassandra CPU|Java RAM|Java CPU|
+|-----------|--------|-------------|-------------|--------|--------|
+|1000       |Datastax|89,63        |26,15        |32,78   |0,16    |
+|1000       |Kundera |131,09       |26,31        |74,54   |0,71    |
+|5000       |Datastax|111,42       |26,25        |0,42    |46,33   |
+|5000       |Kundera |88,39        |26,30        |0,88    |71,78   |
+|10000      |Datastax|82,11        |26,30        |0,76    |75,95   |
+|10000      |Kundera |60,51        |26,25        |0,95    |70,01   |
