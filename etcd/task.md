@@ -12,7 +12,7 @@ CONTAINER ID   IMAGE                 COMMAND                  CREATED         ST
 6d426711b1a3   quay.io/coreos/etcd   "etcd --name=etcd-00…"   4 minutes ago   Up 4 minutes   2379-2380/tcp   etcd-etcd-00-1
 
 Проверяем создание кластера
->docker exec -it 6d4 etcdctl member list
+>docker exec -it 6d4 etcdctl member list \
 9772fa935aee2fcb: name=etcd-02 peerURLs=http://etcd-02:2380 clientURLs=http://etcd-02:2379 isLeader=false \
 dc6856a29b285c1c: name=etcd-01 peerURLs=http://etcd-01:2380 clientURLs=http://etcd-01:2379 isLeader=false \
 f9bb7dc32e4429fd: name=etcd-00 peerURLs=http://etcd-00:2380 clientURLs=http://etcd-00:2379 isLeader=true \
